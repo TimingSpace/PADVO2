@@ -1,0 +1,17 @@
+log/*
+checkpoint/saved_model/*
+saved_new/*
+checkpoint/saved_result/*
+*.sh
+*.pyc
+*/*.pyc
+*/*.npy
+src/*/.*
+src/*/*.swp
+src/*.swp
+script/*.swp
+dataset/*
+vo_predict/build/*
+vo_predict/debug/*
+visualization/__pycache__/*
+src/log*
