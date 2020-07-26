@@ -40,6 +40,7 @@ def main():
     color_flag = False
     vis_flag   = False
     ate_flag   = True
+    debug_flag = False
     args.color_flag = color_flag
     args.data_balance_flag = data_balance_flag
     args.coor_layer_flag   = coor_layer_flag
@@ -93,6 +94,9 @@ def main():
             print(epoch,'******',i_batch,'/',len(dataloader),'*******',batch_loss.item())
             batch_loss.backward()
             optimizer.step()
+            if debug_flag:
+                if i_batch>10:
+                    break
         epoch_loss_mean = epoch_loss/len(dataloader)
         if vis_flag:
             vis.plot_epoch_current_errors(epoch,epoch_loss_mean.data)
@@ -122,6 +126,9 @@ def main():
                     gt_f_12 = sample_batched['motion_f_01'].numpy()
                     forward_visual_result = np.append(forward_visual_result,temp_f)
                     ground_truth = np.append(ground_truth,gt_f_12)
+                    if debug_flag:
+                        if i_batch>2000:
+                            break
                 data_length = len(dataloader_vis)*input_batch_size
                 epoch_loss_visu_mean = epoch_loss_visu/len(dataloader_vis)
                 forward_visual_result = forward_visual_result.reshape(-1,6)*dataloader_vis.dataset.motion_stds
@@ -159,29 +166,34 @@ def main():
                     gt_f_12 = sample_batched['motion_f_01'].numpy()
                     forward_visual_result = np.append(forward_visual_result,temp_f)
                     ground_truth = np.append(ground_truth,gt_f_12)
+                    if debug_flag:
+                        if i_batch>2000:
+                            break
                 data_length = len(dataloader_vid)*input_batch_size
                 epoch_loss_eval_mean=epoch_loss_eval/len(dataloader_vid)
-                forward_visual_result = forward_visual_result.reshape(data_length,6)*dataloader_vid.dataset.motion_stds
+                forward_visual_result = forward_visual_result.reshape(-1,6)*dataloader_vid.dataset.motion_stds
                 forward_visual_result[:,no_motion_flag]=0
                 #ground_truth = ground_truth.reshape(data_length,6)*kitti_dataset_test.motion_stds+kitti_dataset_test.motion_means
-                ground_truth = ground_truth.reshape(data_length,6)*dataloader_vid.dataset.motion_stds
+                ground_truth = ground_truth.reshape(-1,6)*dataloader_vid.dataset.motion_stds
 
                 forward_visual_result_m = tf.eular2pose(forward_visual_result)
                 ground_truth_m          = tf.eular2pose(ground_truth)
                 #forward_visual_result_m = tf.ses2poses(forward_visual_result)
                 #ground_truth_m          = tf.ses2poses(ground_truth)
-                plot_path([ground_truth_m,forward_visual_result_m],epoch,args)
-                rot_eval,tra_eval   = evaluate.evaluate(ground_truth_m,forward_visual_result_m)
+                rpe = None
                 if ate_flag:
+                    rot_eval,tra_eval   = evaluate.evaluate(ground_truth_m,forward_visual_result_m)
                     testing_ate_data.write(str(np.mean(tra_eval))+' '+ str(np.mean(rot_eval))+'\n')
                     testing_ate_data.flush()
+                    rpe = str(np.mean(rot_eval))+' '+str(np.mean(tra_eval))
                 if vis_flag:
                     vis.plot_two_path_with_gt(forward_visual_result_m,forward_visual_result_m,ground_truth_m,10,'testing set forward')
                     vis.plot_epoch_training_validing(epoch,epoch_loss_visu_mean.detach().cpu().numpy(),epoch_loss_eval_mean.detach().cpu().numpy())
                     if ate_flag:
                         vis.plot_epoch_training_validing_2(epoch,np.mean(tra_train),np.mean(tra_eval),22)
 
-def plot_path(poses,epoch,args):
+                plot_path([ground_truth_m,forward_visual_result_m],epoch,args,rpe)
+def plot_path(poses,epoch,args,rpe=None):
     fig = plt.figure(figsize=(12,6.5))
     labels = ['Ground Truth','Estimation']
     i = 0
@@ -197,6 +209,8 @@ def plot_path(poses,epoch,args):
     ax2.set_xlabel('frame')
     ax2.set_xlabel('y/m')
     ax2.legend(loc = 'upper left')
+    if rpe is not None:
+        ax2.set_title('average error ' +rpe )
     plt.savefig('../checkpoint/saved_result/testing_path_'+args.model_name+'_'+str(epoch).zfill(3)+'.png')
     plt.close('all')
 
