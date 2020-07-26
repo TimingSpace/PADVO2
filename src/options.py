@@ -14,5 +14,11 @@ def parse():
     parser.add_argument('--port', dest='visdom_port', default='8202', help='visdom port')
     parser.add_argument('--ip', dest='visdom_ip', default='http://128.237.139.184', help='visdom port')
     parser.add_argument('--mean_std_path', dest='mean_std_path', default='my_utils/mean_std.txt', help='visdom port')
+    parser.add_argument('--pad',dest='pad_flag',action='store_true')
+    parser.add_argument('--no_pad',dest='pad_flag',action='store_false')
+    parser.add_argument('--att',dest='with_attention_flag',action='store_true')
+    parser.add_argument('--no_att',dest='with_attention_flag',action='store_false')
+    parser.add_argument('--coor',dest='coor_layer_flag',action='store_true')
+    parser.add_argument('--no_coor',dest='coor_layer_flag',action='store_false')
     args = parser.parse_args()
     return args

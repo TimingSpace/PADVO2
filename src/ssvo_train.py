@@ -29,9 +29,10 @@ def main():
     save_visualize_training_period = 5
     input_batch_size = args.batch_size
     finetune_flag = False
-    coor_layer_flag   = True
-    pad_flag = True
-    with_attention_flag = True
+    coor_layer_flag   = args.coor_layer_flag
+    pad_flag = args.pad_flag
+    with_attention_flag = args.with_attention_flag
+    print(coor_layer_flag,pad_flag,with_attention_flag)
     use_gpu_flag = True
     #motion_flag = [2,4]
     motion_flag = [0,1,2,3,4,5]

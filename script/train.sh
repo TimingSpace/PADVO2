@@ -3,8 +3,10 @@
 cd $PWD/src # path to current source 
 traindata=kitti
 testdata=kitti
+vis=8520
+tag=0726_001
 
-python3 ssvo_train.py --imagelist ../dataset/$traindata/$traindata.image.train --motion ../dataset/$traindata/$traindata.pose.train --imagelist_test ../dataset/$testdata/$testdata.image.test --motion_test ../dataset/$testdata/$testdata.pose.test --ip http://127.0.0.1 --port 8527 --model 0622_002 --batch 10 --model_load test_save_model_2.pt #--fine_tune 0 --pad 1
+python3 ssvo_train.py --imagelist ../dataset/$traindata/$traindata.image.train --motion ../dataset/$traindata/$traindata.pose.train --imagelist_test ../dataset/$testdata/$testdata.image.test --motion_test ../dataset/$testdata/$testdata.pose.test --ip http://127.0.0.1 --port $vis --model $tag --batch 10 --model_load test_save_model_2.pt  --no_pad --no_att --coor
 
 #cd /home/wangxiangwei/Program/SingleShotVO/src
 #traindata=kitti
