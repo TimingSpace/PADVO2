@@ -2,7 +2,6 @@ log/*
 checkpoint/saved_model/*
 saved_new/*
 checkpoint/saved_result/*
-*.sh
 *.pyc
 */*.pyc
 */*.npy

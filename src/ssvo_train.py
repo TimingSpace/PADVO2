@@ -38,7 +38,7 @@ def main():
     data_balance_flag = False
     color_flag = False
     vis_flag   = False
-    ate_flag   = False
+    ate_flag   = True
     args.color_flag = color_flag
     args.data_balance_flag = data_balance_flag
     args.coor_layer_flag   = coor_layer_flag
@@ -197,6 +197,8 @@ def plot_path(poses,epoch,args):
     ax2.set_xlabel('y/m')
     ax2.legend(loc = 'upper left')
     plt.savefig('../checkpoint/saved_result/testing_path_'+args.model_name+'_'+str(epoch).zfill(3)+'.png')
+    plt.close('all')
+
 
 
 def dataloader_init(args):
