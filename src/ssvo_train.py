@@ -16,6 +16,8 @@ import visualization.my_visualizer as visualizer
 import evaluate
 from options import parse as parse
 import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
 torch.manual_seed(100) # random seed generate random number
 
 
@@ -127,7 +129,7 @@ def main():
                     forward_visual_result = np.append(forward_visual_result,temp_f)
                     ground_truth = np.append(ground_truth,gt_f_12)
                     if debug_flag:
-                        if i_batch>2000:
+                        if i_batch*input_batch_size>1500:
                             break
                 data_length = len(dataloader_vis)*input_batch_size
                 epoch_loss_visu_mean = epoch_loss_visu/len(dataloader_vis)
@@ -167,7 +169,7 @@ def main():
                     forward_visual_result = np.append(forward_visual_result,temp_f)
                     ground_truth = np.append(ground_truth,gt_f_12)
                     if debug_flag:
-                        if i_batch>2000:
+                        if i_batch*input_batch_size>1500:
                             break
                 data_length = len(dataloader_vid)*input_batch_size
                 epoch_loss_eval_mean=epoch_loss_eval/len(dataloader_vid)
@@ -194,25 +196,30 @@ def main():
 
                 plot_path([ground_truth_m,forward_visual_result_m],epoch,args,rpe)
 def plot_path(poses,epoch,args,rpe=None):
+    print('begin draw path')
     fig = plt.figure(figsize=(12,6.5))
+    print('begin draw path')
     labels = ['Ground Truth','Estimation']
     i = 0
     ax1 = plt.subplot(121)
     ax2 = plt.subplot(122)
+    print('begin draw path')
     for pose in poses:
         ax1.plot(pose[:,3],pose[:,11],label = labels[i])
         ax2.plot(pose[:,7],label = labels[i])
         i+=1
+    print('begin draw path')
     ax1.legend(loc = 'upper left')
     ax1.set_xlabel('x/m')
     ax1.set_ylabel('z/m')
     ax2.set_xlabel('frame')
     ax2.set_xlabel('y/m')
     ax2.legend(loc = 'upper left')
+    print('begin draw path')
     if rpe is not None:
         ax2.set_title('average error ' +rpe )
+    print('begin draw path')
     plt.savefig('../checkpoint/saved_result/testing_path_'+args.model_name+'_'+str(epoch).zfill(3)+'.png')
-    plt.close('all')
 
 
 
